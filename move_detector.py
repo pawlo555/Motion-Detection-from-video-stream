@@ -14,25 +14,33 @@ def fix_color(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 class MoveDetector:
-    def __init__(self ):
+    def __init__(self):
         print("Hello")
+
+    def loop(self):
+        while (True):
+            start = time.time()
+            # Capture frame-by-frame
+            prev_frame = None
+            ret, frame = cap.read()
+
+            if prev_frame is not None and prev_frame == frame:
+                print(True)
+            # Our operations on the frame come here
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Display the resulting frame
+            cv2.imshow('frame', gray)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            end = time.time()
+            prev_frame = frame
+            print(end-start)
+
+        cap.release()
+        cv2.destroyAllWindows()
 
 cap = cv2.VideoCapture(0)
 
-while(True):
-    start = time.time()
-    # Capture frame-by-frame
-    ret, frame = cap.read()
-
-    # Our operations on the frame come here
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # Display the resulting frame
-    cv2.imshow('frame', gray)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    end = time.time()
-    print(end-start)
 
 # When everything done, release the capture
-cap.release()
-cv2.destroyAllWindows()
+
