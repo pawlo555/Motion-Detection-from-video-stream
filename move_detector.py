@@ -15,32 +15,36 @@ import time
 def fix_color(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
+
 class MoveDetector:
     def __init__(self):
         self.background = bg.Background(10)
         self.captureStream = cv2.VideoCapture(0)
 
+    def process_frame(self, frame):
+        if self.background.is_working():
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            gray_background = cv2.cvtColor(self.background.get_background(), cv2.COLOR_BGR2GRAY)
+            diff_frame = cv2.absdiff(gray_frame, gray_background)
+            blurred = cv2.GaussianBlur(diff_frame, (11, 11), 0)
+            _, threshold_frame = cv2.threshold(blurred, 30, 255, cv2.THRESH_BINARY)
+            return threshold_frame
+        else:
+            print("Frame:", frame)
+            return frame
+
     def loop(self):
         while (True):
             start = time.time()
-            # Capture frame-by-frame
-            prev_frame = None
-            ret, frame = self.captureStream.read()
+            _, frame = self.captureStream.read()
             self.background.add_frame(np.copy(frame))
-            if prev_frame is not None and prev_frame == frame:
-                print(True)
-            # Our operations on the frame come here
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            # Display the resulting frame
-            if self.background.get_background() is not None:
-                cv2.imshow('frame', self.background.get_background())
-            else:
-                cv2.imshow('frame', gray)
+
+            image = self.process_frame(np.copy(frame))
+            cv2.imshow('frame', image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             end = time.time()
-            prev_frame = frame
-            #print(end-start)
+            print(end-start)
         # When everything done, release the capture
         self.captureStream.release()
         cv2.destroyAllWindows()
