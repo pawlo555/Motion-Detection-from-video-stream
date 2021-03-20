@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 class Background:
     """
@@ -22,7 +22,7 @@ class Background:
         if self.work:
             self.update_background(frame)
         else:
-            self.add_frame(frame)
+            self.insert_frame(frame)
 
     def update_background(self, frame):
         """
@@ -31,11 +31,11 @@ class Background:
         :return: None
         """
         if self.background is not None:
-            self.background = (self.background*0.95 + frame*0.05).astype(dtype=np.unit8)
+            self.background = (self.background*0.90 + frame*0.1).astype(dtype=np.uint8)
         else:
             raise ValueError("Background in None")
 
-    def add_frame(self, frame):
+    def insert_frame(self, frame):
         """
         Adding frame to self.frames
         :param frame: frame to be added
@@ -43,7 +43,7 @@ class Background:
         """
         self.frames.append(frame)
         if len(self.frames) >= self.frames_to_work:
-            self.create_background
+            self.create_background()
             self.work = True
 
     def create_background(self):
@@ -51,7 +51,14 @@ class Background:
         Creating a background
         :return: None
         """
-        self.background = np.median(self.frames, axis=0).astype(dtype=np.uint8)
+        if self.background is None:
+            self.background = np.median(self.frames, axis=0).astype(dtype=np.uint8)
+            print(np.max(self.background))
+            print(np.min(self.background))
+            plt.imshow(self.background)
+            plt.show()
+        else:
+            raise ValueError("Creating a not None background")
 
     def get_background(self):
         """
