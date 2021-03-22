@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 class Background:
     """
@@ -53,10 +53,6 @@ class Background:
         """
         if self.background is None:
             self.background = np.median(self.frames, axis=0).astype(dtype=np.uint8)
-            print(np.max(self.background))
-            print(np.min(self.background))
-            plt.imshow(self.background)
-            plt.show()
         else:
             raise ValueError("Creating a not None background")
 
