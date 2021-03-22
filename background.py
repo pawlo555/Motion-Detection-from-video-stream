@@ -5,14 +5,16 @@ class Background:
     """
     Class responsible for generating and keeping proper background.
     """
-    def __init__(self, frames_number):
+    def __init__(self, frames_number, average_alfa=0.1):
         """
-        :param frames_number: number of frames after the background could be created and starts to work
+        :param frames_number: frames number needed to start working
+        :param average_alfa: smoothing factor in background update
         """
         self.frames_to_work = frames_number
         self.frames = []
         self.work = False
         self.background = None
+        self.average_alfa = average_alfa
 
     def add_frame(self, frame):
         """
@@ -31,7 +33,8 @@ class Background:
         :return: None
         """
         if self.background is not None:
-            self.background = (self.background*0.90 + frame*0.1).astype(dtype=np.uint8)
+            self.background = (self.background*(1-self.average_alfa) +
+                               frame*self.average_alfa).astype(dtype=np.uint8)
         else:
             raise ValueError("Background in None")
 
