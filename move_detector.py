@@ -1,25 +1,15 @@
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
-from IPython.display import Video
-import vlc
-import background as bg
-
-np.random.seed(404)
-
 import os
-
-os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
-
+import background as bg
 import time
 
-
-def fix_color(image):
-    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+np.random.seed(404)
+os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
 
 
 class MoveDetector:
-    def __init__(self, box_min_area = 700):
+    def __init__(self, box_min_area=1000):
         self.background = bg.Background(10)
         self.captureStream = cv2.VideoCapture(0)
         self.box_min_area = box_min_area
@@ -33,7 +23,6 @@ class MoveDetector:
             _, threshold_frame = cv2.threshold(blurred, 50, 255, cv2.THRESH_BINARY)
             return threshold_frame
         else:
-            print("Frame:", frame)
             return frame
 
     def get_boxes(self, frame):
@@ -55,7 +44,7 @@ class MoveDetector:
         return frame
 
     def loop(self):
-        while (True):
+        while True:
             start = time.time()
             _, frame = self.captureStream.read()
             self.background.add_frame(np.copy(frame))
@@ -82,8 +71,11 @@ def apply_non_max_suppression(boxes):
     for box in boxes:
         box_as_array = list(cv2.boundingRect(box))
         centered_box.append(box_as_array)
-    print(centered_box)
     scores = [1.0 for _ in range(len(boxes))]
-    print(scores)
-    indices = cv2.dnn.NMSBoxes(centered_box, scores, 0.5, 0.2)
+    indices = cv2.dnn.NMSBoxes(centered_box, scores, 0.5, 0.1)
+    print(len(boxes), len(indices))
     return indices
+
+
+def fix_color(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
