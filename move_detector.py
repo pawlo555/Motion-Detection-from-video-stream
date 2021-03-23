@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import background as bg
 import time
+from mask import Mask
 
 
 class MoveDetector:
@@ -20,6 +21,7 @@ class MoveDetector:
         self.box_min_area = box_min_area
         self.blur_shape = (blur_size, blur_size)
         self.min_threshold = min_threshold
+        self.mask = Mask()
 
     def process_frame(self, frame):
         """
@@ -31,8 +33,8 @@ class MoveDetector:
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray_background = cv2.cvtColor(self.background.get_background(), cv2.COLOR_BGR2GRAY)
             diff_frame = cv2.absdiff(gray_frame, gray_background)
-
-            blurred = cv2.GaussianBlur(diff_frame, self.blur_shape, 0)
+            after_mask = self.mask.add_mask(diff_frame)
+            blurred = cv2.GaussianBlur(after_mask, self.blur_shape, 0)
             _, threshold_frame = cv2.threshold(blurred, self.min_threshold, 255, cv2.THRESH_BINARY)
             return threshold_frame
         else:
