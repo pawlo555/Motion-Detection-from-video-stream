@@ -106,7 +106,7 @@ class MoveDetector:
         if 255 > new_min_threshold >= 0:
             self.min_threshold = new_min_threshold
         else:
-            raise ValueError
+            raise ValueError("Min threshold must be between 0 and 255")
 
     def set_average_alfa(self, new_alfa):
         self.background.set_average_alfa(new_alfa)
