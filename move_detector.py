@@ -25,17 +25,11 @@ class MoveDetector:
         self.state = States.Normal
         self.mask = Mask()
 
-    def add_mask(self, mask_url):
-        self.mask.set_size(
-            (int(self.captureStream.get(3)),int(self.captureStream.get(4)))
-        )
-        self.mask.set_mask(mask_url)
-
     def make_threshold(self, frame):
         """
-        Processing frame from BGR to black and white image, with white as places when move is detected
+        Creating a threshold frame, which shows where the move was detected
         :param frame: frame to be proceeds
-        :return: proceeds frame
+        :return: threshold white and black frame
         """
         if self.background.is_working():
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -109,7 +103,18 @@ class MoveDetector:
     def set_state(self, new_state):
         self.state = new_state
 
+    def add_mask(self, mask_url):
+        self.mask.set_size(
+            (int(self.captureStream.get(3)), int(self.captureStream.get(4)))
+        )
+        self.mask.set_mask(mask_url)
+
     def process_frame(self, frame):
+        """
+        Processing a frame, accordingly to current self.state
+        :param frame: frame to be precessed
+        :return: processed frame
+        """
         self.background.add_frame(np.copy(frame))
         if self.state == States.Normal:
             return self.detect_move(frame)
@@ -130,6 +135,12 @@ def area(box):
 
 
 class States(enum.Enum):
+    """
+    Legal state of detector
+    Normal - detects move
+    Background - showing current background
+    Threshold - for debugging, showing where the move was detected
+    """
     Normal = 0
     Background = 1
     Threshold = 2
