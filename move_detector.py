@@ -31,7 +31,7 @@ class MoveDetector:
         )
         self.mask.set_mask(mask_url)
 
-    def process_frame(self, frame):
+    def make_threshold(self, frame):
         """
         Processing frame from BGR to black and white image, with white as places when move is detected
         :param frame: frame to be proceeds
@@ -55,7 +55,7 @@ class MoveDetector:
         :return: boxes where move was detected, None if background is not working
         """
         if self.background.is_working():
-            threshold_frame = self.process_frame(frame)
+            threshold_frame = self.make_threshold(frame)
             boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL,
                                         cv2.CHAIN_APPROX_SIMPLE)
             return boxes
