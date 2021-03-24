@@ -10,6 +10,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 import move_detector as md
 
+
 import cv2
 import numpy
 
@@ -18,14 +19,12 @@ class KivyCamera(Image):
     def __init__(self, capture, fps, **kwargs):
         super(KivyCamera, self).__init__(**kwargs)
         self.detector = md.MoveDetector()
-        #self.detector.loop() #to trzea ogarnąć jako update 
         self.capture = self.detector.captureStream
         Clock.schedule_interval(self.update, 1.0 / fps)
-        
 
     def update(self, dt):
         ret, frame = self.capture.read()
-        image = self.detector.detect_move(frame)
+        image = self.detector.process_frame(frame)
         if ret:
             # convert it to texture
             buf1 = cv2.flip(image, 0)

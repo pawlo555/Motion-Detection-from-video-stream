@@ -3,6 +3,7 @@ import cv2
 import background as bg
 import time
 from mask import Mask
+import enum
 
 
 class MoveDetector:
@@ -21,7 +22,7 @@ class MoveDetector:
         self.box_min_area = box_min_area
         self.blur_shape = (blur_size, blur_size)
         self.min_threshold = min_threshold
-
+        self.state = States.Normal
         self.mask = Mask(
             "./mask.jpg",
             (
@@ -30,7 +31,7 @@ class MoveDetector:
             )
         )
 
-    def process_frame(self, frame):
+    def make_threshold(self, frame):
         """
         Processing frame from BGR to black and white image, with white as places when move is detected
         :param frame: frame to be proceeds
@@ -54,7 +55,7 @@ class MoveDetector:
         :return: boxes where move was detected, None if background is not working
         """
         if self.background.is_working():
-            threshold_frame = self.process_frame(frame)
+            threshold_frame = self.make_threshold(frame)
             boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL,
                                         cv2.CHAIN_APPROX_SIMPLE)
             return boxes
@@ -75,22 +76,7 @@ class MoveDetector:
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         return frame
 
-    def loop(self):
-        while True:
-            start = time.time()
-            _, frame = self.captureStream.read()
-            image = self.detect_move(frame)
-            cv2.imshow('frame', image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-            end = time.time()
-            print(end - start)
-        # When everything done, release the capture
-        self.captureStream.release()
-        cv2.destroyAllWindows()
-
     def detect_move(self, frame):
-        self.background.add_frame(np.copy(frame))
         boxes = self.get_boxes(np.copy(frame))
         return self.apply_boxes(frame, boxes)
 
@@ -120,6 +106,18 @@ class MoveDetector:
     def set_average_alfa(self, new_alfa):
         self.background.set_average_alfa(new_alfa)
 
+    def set_state(self, new_state):
+        self.state = new_state
+
+    def process_frame(self, frame):
+        self.background.add_frame(np.copy(frame))
+        if self.state == States.Normal:
+            return self.detect_move(frame)
+        elif self.state == States.Background:
+            return self.background.get_background()
+        else:
+            return self.make_threshold(frame)
+
 
 def area(box):
     """
@@ -129,3 +127,9 @@ def area(box):
     """
     _, _, w, h = cv2.boundingRect(box)
     return w * h
+
+
+class States(enum.Enum):
+    Normal = 0
+    Background = 1
+    Threshold = 2
