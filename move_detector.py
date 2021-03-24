@@ -88,7 +88,9 @@ class MoveDetector:
         return self.apply_boxes(frame, boxes)
 
     def set_capture_link(self, new_link):
+        self.captureStream.release()
         self.captureStream = cv2.VideoCapture(new_link)
+        self.background = bg.Background(self.background.frames_to_work, self.background.average_alfa)
 
     def set_box_min_area(self, new_min_area):
         if isinstance(new_min_area, int) and new_min_area >= 0:
