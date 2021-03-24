@@ -21,7 +21,14 @@ class MoveDetector:
         self.box_min_area = box_min_area
         self.blur_shape = (blur_size, blur_size)
         self.min_threshold = min_threshold
-        self.mask = Mask()
+
+        self.mask = Mask(
+            "./mask.jpg",
+            (
+                int(self.captureStream.get(3)),
+                int(self.captureStream.get(4))
+            )
+        )
 
     def process_frame(self, frame):
         """
