@@ -23,15 +23,15 @@ class MoveDetector:
         self.blur_shape = (blur_size, blur_size)
         self.min_threshold = min_threshold
         self.state = States.Normal
-        self.mask = Mask(
-            "./mask.jpg",
-            (
-                int(self.captureStream.get(3)),
-                int(self.captureStream.get(4))
-            )
-        )
+        self.mask = Mask()
 
-    def make_threshold(self, frame):
+    def add_mask(self, mask_url):
+        self.mask.set_size(
+            (int(self.captureStream.get(3)),int(self.captureStream.get(4)))
+        )
+        self.mask.set_mask(mask_url)
+
+    def process_frame(self, frame):
         """
         Processing frame from BGR to black and white image, with white as places when move is detected
         :param frame: frame to be proceeds
@@ -55,7 +55,7 @@ class MoveDetector:
         :return: boxes where move was detected, None if background is not working
         """
         if self.background.is_working():
-            threshold_frame = self.make_threshold(frame)
+            threshold_frame = self.process_frame(frame)
             boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL,
                                         cv2.CHAIN_APPROX_SIMPLE)
             return boxes
