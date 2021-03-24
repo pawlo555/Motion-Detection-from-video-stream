@@ -59,6 +59,12 @@ class Background:
         else:
             raise ValueError("Creating a not None background")
 
+    def set_average_alfa(self, new_alfa):
+        if 1.0 > new_alfa > 0.0:
+            self.average_alfa = new_alfa
+        else:
+            raise ValueError("Alfa need to be between 0 and 1")
+
     def get_background(self):
         """
         :return: self.background

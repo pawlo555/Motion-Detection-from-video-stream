@@ -87,6 +87,30 @@ class MoveDetector:
         boxes = self.get_boxes(np.copy(frame))
         return self.apply_boxes(frame, boxes)
 
+    def set_capture_link(self, new_link):
+        self.captureStream = cv2.VideoCapture(new_link)
+
+    def set_box_min_area(self, new_min_area):
+        if isinstance(new_min_area, int) and new_min_area >= 0:
+            self.box_min_area = new_min_area
+        else:
+            raise TypeError("Min_area must be integer greater or equal 0")
+
+    def set_blur_size(self, new_blur):
+        if isinstance(new_blur, int) and new_blur >= 0:
+            self.blur_shape = (new_blur, new_blur)
+        else:
+            raise TypeError("Blur must be integer greater or equal than 0")
+
+    def set_min_threshold(self, new_min_threshold):
+        if 255 > new_min_threshold >= 0:
+            self.min_threshold = new_min_threshold
+        else:
+            raise ValueError
+
+    def set_average_alfa(self, new_alfa):
+        self.background.set_average_alfa(new_alfa)
+
 
 def area(box):
     """
