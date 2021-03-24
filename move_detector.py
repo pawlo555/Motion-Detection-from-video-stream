@@ -72,10 +72,7 @@ class MoveDetector:
         while True:
             start = time.time()
             _, frame = self.captureStream.read()
-            self.background.add_frame(np.copy(frame))
-
-            boxes = self.get_boxes(np.copy(frame))
-            image = self.apply_boxes(frame, boxes)
+            image = self.detect_move(frame)
             cv2.imshow('frame', image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -84,6 +81,11 @@ class MoveDetector:
         # When everything done, release the capture
         self.captureStream.release()
         cv2.destroyAllWindows()
+
+    def detect_move(self, frame):
+        self.background.add_frame(np.copy(frame))
+        boxes = self.get_boxes(np.copy(frame))
+        return self.apply_boxes(frame, boxes)
 
 
 def area(box):
