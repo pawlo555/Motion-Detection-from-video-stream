@@ -13,6 +13,9 @@ class Mask:
         Setting the size of the mask to the size of the frame
         :param size: size of the frame
         """
+        if len(size) != 2:
+            raise ValueError("size must be 2 dimensional")
+            
         self.size = size
 
     def set_mask(self, img):
@@ -32,4 +35,4 @@ class Mask:
         :param self: Mask object
         :param frame: frame to be masked
         """
-        return np.multiply(frame, self.mask)
+        return frame if not self.mask else np.multiply(frame, self.mask)
