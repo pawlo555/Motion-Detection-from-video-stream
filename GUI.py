@@ -34,7 +34,7 @@ class KivyCamera(Image):
             image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             # display image from the texture
             self.texture = image_texture
-    
+
     #todo  
     def newSource(self,command):
         self.detector.set_capture_link(command)
