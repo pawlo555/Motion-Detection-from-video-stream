@@ -26,8 +26,11 @@ class Mask:
         :param self: Mask object
         :param img: path to mask image
         """
-        image = Image.open(img).convert("L").resize(self.size)
-        self.mask = np.array(image)[:,:] // 255
+        try:
+            image = Image.open(img).convert("L").resize(self.size)
+            self.mask = np.array(image)[:,:] // 255
+        except:
+            print("Image should be have an image extension. Mask not loaded")
 
     def add_mask(self, frame):
         """ 
@@ -35,4 +38,4 @@ class Mask:
         :param self: Mask object
         :param frame: frame to be masked
         """
-        return frame if not self.mask else np.multiply(frame, self.mask)
+        return frame if self.mask is None else np.multiply(frame, self.mask)

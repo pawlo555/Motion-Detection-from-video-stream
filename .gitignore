@@ -1,3 +1,4 @@
+.gitignore
 __pycache__
 woda.mp4
 .vscode
