@@ -15,14 +15,13 @@ import numpy
 
 
 class KivyCamera(Image):
-    def __init__(self, capture, fps, **kwargs):
+    def __init__(self, fps, **kwargs):
         super(KivyCamera, self).__init__(**kwargs)
         self.detector = md.MoveDetector()
-        self.capture = self.detector.captureStream
         Clock.schedule_interval(self.update, 1.0 / fps)
 
     def update(self, dt):
-        ret, frame = self.capture.read()
+        ret, frame = self.detector.captureStream.read()
         image = self.detector.process_frame(frame)
         if ret:
             # convert it to texture
@@ -37,7 +36,6 @@ class KivyCamera(Image):
     # todo
     def newSource(self, command):
         self.detector = md.MoveDetector(command)
-        self.capture = self.detector.captureStream
 
     def newMinBox(self, command):
         self.detector.set_box_min_area(command)
@@ -102,8 +100,8 @@ class MyGrid(GridLayout):
 
         ### inside control panel
 
-        self.capture = 1
-        self.my_camera1 = KivyCamera(capture=self.capture, fps=30)
+
+        self.my_camera1 = KivyCamera( fps=30)
         self.controlPanel.add_widget(self.my_camera1)
         self.controlPanel.add_widget(self.txtPanel)
 
@@ -270,11 +268,8 @@ class MyGrid(GridLayout):
 
     def pressed12(self, instance):
         # close app
+        self.my_camera1.detector.captureStream.release()
         App.get_running_app().stop()
-        Window.close()
-
-    def loadCam(self, instance):
-        self.capture = cv2.VideoCapture(self.a)
 
 
 class MyApp(App):
@@ -283,7 +278,7 @@ class MyApp(App):
 
     def on_stop(self):
         # without this, app will not exit even if the window is closed
-        self.capture.release()
+        print("Closing")
 
 
 if __name__ == '__main__':
