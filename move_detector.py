@@ -1,13 +1,12 @@
 import numpy as np
 import cv2
 import background as bg
-import time
 from mask import Mask
 import enum
 
 
 class MoveDetector:
-    def __init__(self, capture_link=0, box_min_area=800, blur_size=15, min_threshold=10,
+    def __init__(self, capture_link="https://imageserver.webcamera.pl/rec/krakow4/latest.mp4", box_min_area=800, blur_size=15, min_threshold=10,
                  frames_to_work=10, average_alfa=0.1):
         """
         :param capture_link: link to the stream (0 is for local camera)
@@ -77,7 +76,9 @@ class MoveDetector:
     def set_capture_link(self, new_link):
         self.captureStream.release()
         self.captureStream = cv2.VideoCapture(new_link)
-        self.background = bg.Background(self.background.frames_to_work, self.background.average_alfa)
+        print(len(self.background.frames))
+        self.background = bg.Background(100, self.background.average_alfa)
+        print(len(self.background.frames))
 
     def set_box_min_area(self, new_min_area):
         if isinstance(new_min_area, int) and new_min_area >= 0:
