@@ -6,8 +6,8 @@ import enum
 
 
 class MoveDetector:
-    def __init__(self, capture_link="https://imageserver.webcamera.pl/rec/krakow4/latest.mp4", box_min_area=800, blur_size=15, min_threshold=10,
-                 frames_to_work=10, average_alfa=0.1):
+    def __init__(self, capture_link="https://imageserver.webcamera.pl/rec/krakow4/latest.mp4", box_min_area=800,
+                 blur_size=15, min_threshold=10, frames_to_work=10, average_alfa=0.1):
         """
         :param capture_link: link to the stream (0 is for local camera)
         :param box_min_area: minimal box area
@@ -23,7 +23,7 @@ class MoveDetector:
         self.min_threshold = min_threshold
         self.state = States.Normal
         self.mask = Mask()
-        self.defaults = [capture_link, box_min_area, blur_size, min_threshold, frames_to_work, average_alfa]
+        self.defaults = (box_min_area, blur_size, min_threshold, average_alfa)
 
     def make_threshold(self, frame):
         """
@@ -74,13 +74,6 @@ class MoveDetector:
         boxes = self.get_boxes(np.copy(frame))
         return self.apply_boxes(frame, boxes)
 
-    def set_capture_link(self, new_link):
-        self.captureStream.release()
-        self.captureStream = cv2.VideoCapture(new_link)
-        print(len(self.background.frames))
-        self.background = bg.Background(100, self.background.average_alfa)
-        print(len(self.background.frames))
-
     def set_box_min_area(self, new_min_area):
         if isinstance(new_min_area, int) and new_min_area >= 0:
             self.box_min_area = new_min_area
@@ -121,17 +114,17 @@ class MoveDetector:
         if self.state == States.Normal:
             return self.detect_move(frame)
         elif self.state == States.Background:
-            return self.background.get_background()
+            threshold = self.background.get_background()
+            threshold = cv2.cvtColor(threshold, cv2.COLOR_GRAY2RGB)
+            return threshold
         else:
             return self.make_threshold(frame)
     
-    def backToDefault(self):
-        self.capture_link, \
-            self.box_min_area, \
-            self.blur_size, \
-            self.min_threshold, \
-            self.frames_to_work, \
-            self.average_alfa = self.defaults
+    def back_to_default(self):
+        self.box_min_area = self.defaults[0]
+        self.blur_shape = (self.defaults[1], self.defaults)
+        self.min_threshold = self.defaults[2]
+        self.background.set_average_alfa(self.defaults[3])
         self.state = States.Normal
 
 
