@@ -60,7 +60,7 @@ class KivyCamera(Image):
     # todo
     def debug1(self):
         # do debug
-        print("debug 1")
+        self.detector.set_state(md.States.Normal)
 
     # todo
     def debug2(self):
@@ -70,7 +70,7 @@ class KivyCamera(Image):
     # todo
     def debug3(self):
         # do debug
-        print("debug 3")
+        self.detector.set_state(md.States.Threshold)
 
     # todo
     def backToStr(self):
@@ -265,6 +265,7 @@ class MyGrid(GridLayout):
     def pressed11(self, instance):
         # Debug 3
         self.outputPanel.text = "debug 3 ON"
+        print("XD")
         self.my_camera1.debug3()
 
     def pressed12(self, instance):

@@ -43,7 +43,6 @@ class Background:
         :param frame: frame to be added
         :return: None
         """
-        print(len(self.frames))
         self.frames.append(frame)
         if len(self.frames) >= self.frames_to_work:
             self.create_background()

@@ -113,8 +113,12 @@ class MoveDetector:
             return self.detect_move(frame)
         elif self.state == States.Background:
             return self.background.get_background()
+        elif self.state == States.Threshold:
+            threshold = self.make_threshold(frame)
+            threshold = cv2.cvtColor(threshold, cv2.COLOR_GRAY2RGB)
+            return threshold
         else:
-            return self.make_threshold(frame)
+            raise AssertionError("Invalid state of process frame")
 
 
 def area(box):
