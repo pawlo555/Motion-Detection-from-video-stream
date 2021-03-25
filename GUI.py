@@ -75,6 +75,7 @@ class KivyCamera(Image):
     # todo
     def backToStr(self):
         # kamera wraca do stanu początkowego
+        self.detector.backToDefault()
         print("app clean")
 
 
