@@ -19,7 +19,6 @@ class Background:
     def add_frame(self, frame):
         """
         :param frame: frame get from VideoCapture read() function
-        :returns: None
         """
         if self.work:
             self.update_background(frame)

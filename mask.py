@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image, ImageDraw
 
+
 class Mask:
     def __init__(self, img=None, size=(720, 540)):
         self.mask = None
@@ -15,7 +16,7 @@ class Mask:
         """
         if len(size) != 2:
             raise ValueError("size must be 2 dimensional")
-            
+
         self.size = size
 
     def set_mask(self, img):
@@ -28,7 +29,7 @@ class Mask:
         """
         try:
             image = Image.open(img).convert("L").resize(self.size)
-            self.mask = np.array(image)[:,:] // 255
+            self.mask = np.array(image)[:, :] // 255
         except:
             print("Image should be have an image extension. Mask not loaded")
 
