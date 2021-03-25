@@ -49,8 +49,7 @@ class MoveDetector:
         """
         if self.background.is_working():
             threshold_frame = self.make_threshold(frame)
-            boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL,
-                                        cv2.CHAIN_APPROX_SIMPLE)
+            boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             return boxes
         else:
             return None

@@ -33,6 +33,7 @@ class KivyCamera(Image):
             # display image from the texture
             self.texture = image_texture
 
+
     # todo
     def newSource(self, command):
         self.detector = md.MoveDetector(command)
