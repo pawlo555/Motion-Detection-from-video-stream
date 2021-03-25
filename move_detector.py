@@ -114,15 +114,15 @@ class MoveDetector:
         if self.state == States.Normal:
             return self.detect_move(frame)
         elif self.state == States.Background:
-            threshold = self.background.get_background()
+            return self.background.get_background()
+        else:
+            threshold = self.make_threshold(frame)
             threshold = cv2.cvtColor(threshold, cv2.COLOR_GRAY2RGB)
             return threshold
-        else:
-            return self.make_threshold(frame)
     
     def back_to_default(self):
         self.box_min_area = self.defaults[0]
-        self.blur_shape = (self.defaults[1], self.defaults)
+        self.blur_shape = (self.defaults[1], self.defaults[1])
         self.min_threshold = self.defaults[2]
         self.background.set_average_alfa(self.defaults[3])
         self.state = States.Normal
