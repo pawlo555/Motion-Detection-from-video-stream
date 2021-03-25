@@ -23,6 +23,7 @@ class MoveDetector:
         self.min_threshold = min_threshold
         self.state = States.Normal
         self.mask = Mask()
+        self.defaults = [capture_link, box_min_area, blur_size, min_threshold, frames_to_work, average_alfa]
 
     def make_threshold(self, frame):
         """
@@ -49,7 +50,8 @@ class MoveDetector:
         """
         if self.background.is_working():
             threshold_frame = self.make_threshold(frame)
-            boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            boxes, _ = cv2.findContours(threshold_frame.copy(), cv2.RETR_EXTERNAL,
+                                        cv2.CHAIN_APPROX_SIMPLE)
             return boxes
         else:
             return None
@@ -71,6 +73,13 @@ class MoveDetector:
     def detect_move(self, frame):
         boxes = self.get_boxes(np.copy(frame))
         return self.apply_boxes(frame, boxes)
+
+    def set_capture_link(self, new_link):
+        self.captureStream.release()
+        self.captureStream = cv2.VideoCapture(new_link)
+        print(len(self.background.frames))
+        self.background = bg.Background(100, self.background.average_alfa)
+        print(len(self.background.frames))
 
     def set_box_min_area(self, new_min_area):
         if isinstance(new_min_area, int) and new_min_area >= 0:
@@ -113,12 +122,17 @@ class MoveDetector:
             return self.detect_move(frame)
         elif self.state == States.Background:
             return self.background.get_background()
-        elif self.state == States.Threshold:
-            threshold = self.make_threshold(frame)
-            threshold = cv2.cvtColor(threshold, cv2.COLOR_GRAY2RGB)
-            return threshold
         else:
-            raise AssertionError("Invalid state of process frame")
+            return self.make_threshold(frame)
+    
+    def backToDefault(self):
+        self.capture_link, \
+            self.box_min_area, \
+            self.blur_size, \
+            self.min_threshold, \
+            self.frames_to_work, \
+            self.average_alfa = self.defaults
+        self.state = States.Normal
 
 
 def area(box):
