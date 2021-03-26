@@ -1,13 +1,13 @@
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image
 
 
 class Mask:
     def __init__(self, img=None, size=(720, 540)):
         self.mask = None
         self.size = size
-
-        if img: self.set_mask(img)
+        if img:
+            self.set_mask(img)
 
     def set_size(self, size):
         """
@@ -24,7 +24,6 @@ class Mask:
         Setting mask with path to B&W image,
         where white pixels pass frame pixels through, 
         and black ones do not.
-        :param self: Mask object
         :param img: path to mask image
         """
         try:
@@ -36,7 +35,6 @@ class Mask:
     def add_mask(self, frame):
         """ 
         Add mask to a frame
-        :param self: Mask object
         :param frame: frame to be masked
         """
         return frame if self.mask is None else np.multiply(frame, self.mask)
