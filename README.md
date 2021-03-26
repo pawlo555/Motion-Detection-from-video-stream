@@ -5,8 +5,7 @@ This application allows you to check for any movement in the area of sight of th
 <img src="./info.png">
 
 ### Main view
-<b>1.</b> Camera view - moving elements are surrounded with a green box
-
+<b>1.</b> Camera view - moving elements are surrounded with a green box<br>
 <b>2.</b> Input area - here you can enter a number to alter the value of any changable parameter
 
 <b>3.</b> Output view - the program informs you about any changes and alerts you in case of any errors
