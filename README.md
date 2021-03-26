@@ -1,5 +1,4 @@
 # Motion Detector
----
 This application allows you to check for any movement in the area of sight of the camera.  
 ---
 <img src="./info.png">
