@@ -6,8 +6,13 @@ import enum
 
 
 class MoveDetector:
+<<<<<<< HEAD
+    def __init__(self, capture_link="https://imageserver.webcamera.pl/rec/hotel-senacki-krakow/latest.mp4", box_min_area=800, blur_size=15, min_threshold=10,
+                 frames_to_work=10, average_alfa=0.1):
+=======
     def __init__(self, capture_link="https://imageserver.webcamera.pl/rec/krakow4/latest.mp4", box_min_area=800,
                  blur_size=15, min_threshold=10, frames_to_work=10, average_alfa=0.1):
+>>>>>>> origin/main
         """
         :param capture_link: link to the stream (0 is for local camera)
         :param box_min_area: minimal box area
