@@ -6,7 +6,7 @@ import enum
 
 
 class MoveDetector:
-    def __init__(self, capture_link="https://imageserver.webcamera.pl/rec/hotel-senacki-krakow/latest.mp4", box_min_area=800, blur_size=15, min_threshold=10,
+    def __init__(self, capture_link="http://live.uci.agh.edu.pl/video/stream2.cgi?start=1572349755", box_min_area=800, blur_size=15, min_threshold=10,
                  frames_to_work=10, average_alfa=0.1):
         """
         :param capture_link: link to the stream (0 is for local camera)
